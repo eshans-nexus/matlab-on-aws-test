@@ -300,12 +300,19 @@ build {
       "persist_mount_in_fstab /tmp",
       # Reboot the Packer builder so that the freshly mounted tmp folder
       # is reinitialized by the OS
+      "cat /proc/sys/kernel/random/boot_id | sudo tee /var/tmp/boot-id-before-reboot",
       "sudo reboot"
     ]
   }
 
+  # Wait for the reboot, then fail if this still runs on the boot before it.
   provisioner "shell" {
-    inline = ["mkdir /tmp/startup"]
+    pause_before = "30s"
+    inline = [
+      "echo \"Boot ID before reboot: $(cat /var/tmp/boot-id-before-reboot), now: $(cat /proc/sys/kernel/random/boot_id)\"",
+      "if [ \"$(cat /proc/sys/kernel/random/boot_id)\" = \"$(cat /var/tmp/boot-id-before-reboot)\" ]; then echo 'Still on the boot before the reboot' >&2; exit 1; fi",
+      "mkdir /tmp/startup"
+    ]
   }
 
   provisioner "file" {
