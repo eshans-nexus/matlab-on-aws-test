@@ -1,0 +1,16 @@
+# Copyright 2026 The MathWorks, Inc.
+
+# Entry points for the CI steps in this repository. The same `mise run` commands run in GitHub
+# Actions, in other CI systems and locally; `mise tasks ls` lists them.
+
+# The oldest mise these tasks are checked with.
+min_version = "2026.10.8"
+
+# Arguments after the task name go to pytest. The settings come from the environment, as
+# tests/e2e/README.md describes. UV_PYTHON_PREFERENCE makes uv use the Python below instead of
+# one it manages or downloads.
+[tasks.e2e]
+description = "Run the end-to-end tests against a deployed stack"
+tools = { python = "3.12.12", uv = "0.12.2" }
+env = { UV_PYTHON_PREFERENCE = "only-system" }
+run = "uv run --no-project --with-requirements tests/e2e/requirements.txt pytest tests/e2e"

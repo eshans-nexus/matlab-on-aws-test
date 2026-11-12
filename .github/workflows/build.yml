@@ -22,7 +22,7 @@ permissions:
 
 jobs:
   prepare-versions:
-    uses: eshans-nexus/iac-building-blocks/.github/workflows/module-gh-get-versions.yml@main
+    uses: eshans-nexus/iac-building-blocks/.github/workflows/module-gh-get-versions.yml@nvesangi/mise-ci-poc
     with:
       input_versions: ${{ inputs.matlab_versions }}
       search_dir: './releases'
@@ -35,7 +35,7 @@ jobs:
         max-parallel: 5
         matrix:
           version: ${{ fromJson(needs.prepare-versions.outputs.matrix) }}
-    uses: eshans-nexus/iac-building-blocks/.github/workflows/orchestrator-aws-single.yml@main
+    uses: eshans-nexus/iac-building-blocks/.github/workflows/orchestrator-aws-single.yml@nvesangi/mise-ci-poc
     with:
       matlab_version: ${{ matrix.version }}
       refarch_type: ${{ vars.REFARCH_TYPE || 'matlab-linux' }}
@@ -49,7 +49,7 @@ jobs:
   release-artifacts:
     name: Create Aggregate GH Release
     needs: [prepare-versions, create-artifacts]
-    uses: eshans-nexus/iac-building-blocks/.github/workflows/orchestrator-gh-release.yml@main
+    uses: eshans-nexus/iac-building-blocks/.github/workflows/orchestrator-gh-release.yml@nvesangi/mise-ci-poc
     with:
       target_versions: ${{ needs.prepare-versions.outputs.matrix }}
       s3_bucket_url: ${{ vars.S3_BUCKET_URL || 'https://matlab-on-aws.s3.amazonaws.com' }}

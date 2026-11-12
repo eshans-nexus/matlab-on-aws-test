@@ -53,6 +53,15 @@ export AWS_REGION=us-east-1
 pytest
 ```
 
+## Running with mise
+
+From the repository root, [mise](https://mise.jdx.dev) 2026.10.8 or later sets up Python and the
+requirements and runs these tests, as the build workflow does. Arguments after `e2e` go to pytest.
+
+```bash
+STACK_NAME=my-matlab-stack AWS_REGION=us-east-1 mise run e2e
+```
+
 ## Notes
 - Logs are captured and pytest replays them only for failing tests.
 
